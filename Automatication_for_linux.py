@@ -33,91 +33,68 @@ class CP():
 
     def CopyFile(self,Pass):
 
-        if(Pass is None):
-            print(StyleText['info']+"\nCurrent file path")
-            os.system("pwd")
-            
-            NamePathFile = input(StyleText['question']+"\nEnter the path and name of the file\nR= ")
+        print(StyleText['info']+"\nCurrent file path")
+        os.system("pwd")
 
-            if(os.path.exists(NamePathFile)):
-                NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
-                if(os.path.exists(NewPath)):
+        NamePathFile = input(StyleText['question']+"\nEnter the path and name of the file\nR= ")
+
+        if(os.path.exists(NamePathFile)):
+
+            NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
+            
+            if(os.path.exists(NewPath)):
+
+                if(Pass is None):
                     os.system("sudo -S cp "+NamePathFile+" "+NewPath)
                 else:
-                    print(StyleText['question']+"Ruta no encontrada")
-            else:
-                print(StyleText['question']+"Archivo no encontrado")
-
-        else:
-            print(StyleText['info']+"\nCurrent file path")
-            os.system("pwd")
-            
-            NamePathFile = input(StyleText['question']+"\nEnter the path and name of the file\nR= ")
-
-            if(os.path.exists(NamePathFile)):
-                NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
-                if(os.path.exists(NewPath)):
                     os.system("echo "+Pass+" | sudo -S cp "+NamePathFile+" "+NewPath)
-                else:
-                    print(StyleText['question']+"Ruta no encontrada")
             else:
-                print(StyleText['question']+"Archivo no encontrado")
+                print(StyleText['question']+"Ruta no encontrada")
+        else:
+            print(StyleText['question']+"Archivo no encontrado")
+
 
     def CopyFolder(self,Pass):
-        if(Pass is None):
-            print(StyleText['info']+"\nCurrent file path")
-            os.system("pwd")
-            
-            NamePathFile = input(StyleText['question']+"\nEnter the path and name of the folder\nR= ")
 
-            if(os.path.exists(NamePathFile)):
-                NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
-                if(os.path.exists(NewPath)):
+        print(StyleText['info']+"\nCurrent file path")
+        os.system("pwd")
+
+        NamePathFile = input(StyleText['question']+"\nEnter the path and name of the folder\nR= ")
+
+        if(os.path.exists(NamePathFile)):
+
+            NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
+
+            if(os.path.exists(NewPath)):
+
+                if(Pass is None):
                     os.system("sudo -S cp -r "+NamePathFile+" "+NewPath)
                 else:
-                    print(StyleText['question']+"Ruta no encontrada")
-            else:
-                print(StyleText['question']+"Archivo no encontrado")
-        else:
-            print(StyleText['info']+"\nCurrent file path")
-            os.system("pwd")
-            
-            NamePathFile = input(StyleText['question']+"\nEnter the path and name of the folder\nR= ")
-
-            if(os.path.exists(NamePathFile)):
-                NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
-                if(os.path.exists(NewPath)):
                     os.system("echo "+Pass+" | sudo -S cp -r "+NamePathFile+" "+NewPath)
-                else:
-                    print(StyleText['question']+"Ruta no encontrada")
             else:
-                print(StyleText['question']+"Archivo no encontrado")
+                print(StyleText['question']+"Ruta no encontrada")
+        else:
+            print(StyleText['question']+"Folder no encontrado")
 
 
 class PIP():
 
     def Install(self, Pass):       
+        
+        Package = input("Enter package name\nR= ")
+
         if Pass is None:
-
-            Package = input("Enter package name\nR= ")
-
             os.system("pip install "+Package)
         else:
-
-            Package = input("Enter package name\nR= ")
-
             os.system("echo "+Pass+" | sudo pip install "+Package)
 
     def Uninstall(self, Pass):
+        
+        Package = input("Enter package name\nR= ")
+        
         if Pass is None:
-
-            Package = input("Enter package name\nR= ")
-
             os.system("pip uninstall "+Package)
         else:
-
-            Package = input("Enter package name\nR= ")
-
             os.system("echo "+Pass+" | sudo pip uninstall "+Package)
         
 
@@ -149,16 +126,25 @@ StyleText = {'main':"\x1b[1;33m", 'name':"\x1b[1;31m", 'complete':"\x1b[1;32m", 
 
 
 if len(argv) > 1:
+
     while(Aux < len(argv)):
+
         if(argv[Aux] in ListSpecialArg and argv[Aux].find("-") == 0):
+
             if(argv[Aux] == ListSpecialArg[0]):
                 Pass = argv[Aux+1]
-            elif(argv[Aux] == ListSpecialArg[1]):               
+
+            elif(argv[Aux] == ListSpecialArg[1]):   
+
                 sequence = list(map(int, str(argv[Aux+1])))
+
                 ListAction[sequence[0]][sequence[1]](Pass)
+
                 print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
                 time.sleep(2)
+                os.system("clear")
         else:
+
             print(StyleText['fail']+"Argumento invalido")
             time.sleep(2)
             os.system('clear')
