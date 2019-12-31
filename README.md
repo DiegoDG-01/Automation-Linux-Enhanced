@@ -49,9 +49,9 @@ El primer término de la secuencia corresponde el comando a utilizar:
 
 El segundo término corresponde al submenú del comando seleccionado, por ejemplo:
 * **APT**
-    1.- Update
-    2.- Upgrade
-    3.- Update & Upgrade
+    - 1.- Update
+    - 2.- Upgrade
+    - 3.- Update & Upgrade
 
 
 ## Autores
