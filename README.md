@@ -43,9 +43,9 @@ Actualmente los argumentos disponibles son:
 
 El primer término de la secuencia corresponde el comando a utilizar:
 
-1.- **APT**
-2.- **CP**
-3.- **PIP**
+* 1.- **APT**
+* 2.- **CP**
+* 3.- **PIP**
 
 El segundo término corresponde al submenú del comando seleccionado, por ejemplo:
 * **APT**
