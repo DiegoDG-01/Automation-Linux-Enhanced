@@ -31,7 +31,7 @@ class APT():
 
 class CP():
 
-    def CopyFile(self,Pass):
+    def File(self,Pass):
 
         print(StyleText['info']+"\nCurrent file path")
         os.system("pwd")
@@ -54,7 +54,7 @@ class CP():
             print(StyleText['question']+"Archivo no encontrado")
 
 
-    def CopyFolder(self,Pass):
+    def Folder(self,Pass):
 
         print(StyleText['info']+"\nCurrent file path")
         os.system("pwd")
@@ -81,7 +81,7 @@ class PIP():
 
     def Install(self, Pass):       
         
-        Package = input("Enter package name\nR= ")
+        Package = input("Enter package name to install\nR= ")
 
         if Pass is None:
             os.system("pip install "+Package)
@@ -90,7 +90,7 @@ class PIP():
 
     def Uninstall(self, Pass):
         
-        Package = input("Enter package name\nR= ")
+        Package = input("Enter package name to uninstall\nR= ")
         
         if Pass is None:
             os.system("pip uninstall "+Package)
@@ -118,7 +118,7 @@ ListFunction = {1:{0:'1.- APT',1:'\t1.- Update system', 2:'\t2.- Upgrade system'
                 3:{0:'\n3.-PIP', 1:'\t1.- Install package', 2:'\t2.- Uninstall package'},
                 4:{0:'\n4.- WEB server', 1:'\t1.- Initialize local server', 2:'\t2.- Stop local server'}}
 ListAction = {1:{1:apt.Update, 2:apt.Upgrade, 3:apt.FullUPUG},
-              2:{1:cp.CopyFile, 2:cp.CopyFolder},
+              2:{1:cp.File, 2:cp.Folder},
               3:{1:pip.Install, 2:pip.Uninstall},
               4:{1:ws.ServerEnable, 2:ws.ServerDisable}}
 ListSpecialArg = ('-r','-s') #-r Root | -s Sequence
