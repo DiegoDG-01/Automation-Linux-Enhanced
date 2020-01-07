@@ -15,7 +15,7 @@ class APT():
     def Update(self, Pass):
 
         if(Pass is None):
-            print(StyleText['fail']+"TO USE APT PASSWORD IS REQUIRED")
+            print(StyleText['fail']+"\nTO USE APT PASSWORD IS REQUIRED")
             time.sleep(2)
             return False
         else:
@@ -76,8 +76,11 @@ class CP():
 
     def File(self,Pass):
 
-        print(StyleText['info']+"\nCurrent file path")
-        os.system("pwd")
+        print(StyleText['info']+"\nCurrent file path:")
+        subprocess.call(["pwd"])
+
+        print(StyleText['info']+"\nDirectory tree:")
+        subprocess.call(["ls", '-1lF'])
 
         NamePathFile = input(StyleText['question']+"\nEnter the path and name of the file\nR= ")
 
@@ -88,36 +91,81 @@ class CP():
             if(os.path.exists(NewPath)):
 
                 if(Pass is None):
-                    os.system("sudo -S cp "+NamePathFile+" "+NewPath)
+                    process = subprocess.Popen(['cp', NamePathFile, NewPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 else:
-                    os.system("echo "+Pass+" | sudo -S cp "+NamePathFile+" "+NewPath)
+                    echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
+                    process = subprocess.Popen(['sudo', '-S','cp', NamePathFile, NewPath], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                Out, Err = process.communicate()
+
+                Out = Out.decode(getdefaultencoding()).strip()
+                Err = Err.decode(getdefaultencoding()).strip()
+
+                ErrSudo = Err.find("sudo")
+
+                if(ErrSudo == 1):
+                    Err = ''
+
+                if(Err != ''):
+                    print(Err)
+
+                    return False
+                else:
+                    print(Out)
+
+                    return True
             else:
-                print(StyleText['question']+"Ruta no encontrada")
+                print(StyleText['question']+"Folder not found")
+                return False
         else:
-            print(StyleText['question']+"Archivo no encontrado")
+            print(StyleText['question']+"File not found")
+            return False
 
 
     def Folder(self,Pass):
 
-        print(StyleText['info']+"\nCurrent file path")
-        os.system("pwd")
+        print(StyleText['info']+"\nCurrent file path:")
+        subprocess.call(["pwd"])
+
+        print(StyleText['info']+"\nDirectory tree:")
+        subprocess.call(["ls", '-1lF'])
 
         NamePathFile = input(StyleText['question']+"\nEnter the path and name of the folder\nR= ")
 
         if(os.path.exists(NamePathFile)):
 
-            NewPath = input(StyleText['question']+"\nEnter path to copy\nR= ")
+            NewPath = input(StyleText['question']+"\nEnter path tcdo copy\nR= ")
 
             if(os.path.exists(NewPath)):
 
                 if(Pass is None):
-                    os.system("sudo -S cp -r "+NamePathFile+" "+NewPath)
+                    process = subprocess.Popen(['cp', '-r', NamePathFile, NewPath], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 else:
-                    os.system("echo "+Pass+" | sudo -S cp -r "+NamePathFile+" "+NewPath)
+                    echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
+                    process = subprocess.Popen(['sudo', '-S','cp', '-r', NamePathFile, NewPath], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                Out, Err = process.communicate()
+
+                Out = Out.decode(getdefaultencoding()).strip()
+                Err = Err.decode(getdefaultencoding()).strip()
+
+                ErrSudo = Err.find("sudo")
+
+                if(ErrSudo == 1):
+                    Err = ''
+
+                if(Err != ''):
+                    print(Err)
+
+                    return False
+                else:
+                    print(Out)
+
+                    return True
             else:
-                print(StyleText['question']+"Ruta no encontrada")
+                print(StyleText['question']+"Path not found")
         else:
-            print(StyleText['question']+"Folder no encontrado")
+            print(StyleText['question']+"Folder not found")
 
 
 class PIP():
@@ -185,12 +233,11 @@ if len(argv) > 1:
 
                 if(result == True):
                     print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
-                    time.sleep(2)
-                    os.system("clear")
                 else:
                     print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n") 
-                    time.sleep(2)
-                    os.system("clear")                    
+                    
+                time.sleep(3)
+                os.system("clear")                    
         else:
 
             print(StyleText['fail']+"There is an invalid argument")
@@ -235,11 +282,15 @@ while(True):
 
             MenuSelection.append(int(input(StyleText['question']+"\nwhat action do you want to perform?\nR = ")))
 
-            ListAction[MenuSelection[0]][MenuSelection[1]](Pass)
+            result = ListAction[MenuSelection[0]][MenuSelection[1]](Pass)
 
-            print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
+            if(result == True):
+                print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
+            else:
+                print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n")                
 
             time.sleep(2)
+            os.system("clear")
     except ValueError:
         print(StyleText['fail']+"\nENTER NUMBERS ONLY")
         time.sleep(2)
