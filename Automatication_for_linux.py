@@ -1,7 +1,8 @@
 import os
 import time
 import getpass
-from sys import argv
+import subprocess
+from sys import argv, getdefaultencoding
 
 os.system("clear")
 
@@ -14,19 +15,61 @@ class APT():
     def Update(self, Pass):
 
         if(Pass is None):
-            os.system("sudo apt update")
+            print(StyleText['fail']+"TO USE APT PASSWORD IS REQUIRED")
+            time.sleep(2)
+            return False
         else:
-            os.system("echo "+Pass+" | sudo -S apt update")
+            echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
+            process = subprocess.Popen(['sudo', '-S','apt-get','update'], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        Out, Err = process.communicate()
+
+        Out = Out.decode(getdefaultencoding()).strip()
+        Err = Err.decode(getdefaultencoding()).strip()
+
+        if(Err != ''):
+            print(Err)
+
+            return False
+        else:
+            print(Out)
+
+            return True
 
     def Upgrade(self, Pass):
-        if(Pass is None):
-            os.system("sudo apt upgrade")
-        else:
-            os.system("echo "+Pass+" | sudo -S apt upgrade -y")
 
-    def FullUPUG(self, Pass):
-        self.Update(Pass)
-        self.Upgrade(Pass)
+        if(Pass is None):
+            print(StyleText['fail']+"TO USE APT PASSWORD IS REQUIRED")
+            time.sleep(2)
+            return False
+        else:
+            echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
+            process = subprocess.Popen(['sudo', '-S','apt-get','upgrade'], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        Out, Err = process.communicate()
+
+        Out = Out.decode(getdefaultencoding()).strip()
+        Err = Err.decode(getdefaultencoding()).strip()
+
+        if(Err != ''):
+            print(Err)
+
+            return False
+        else:
+            print(Out)
+
+            return True
+
+    def FullUPUG(self, Pass):   
+        result = self.Update(Pass)
+        if(result == True):
+            result = self.Upgrade(Pass)
+            if(result == True):
+                return True
+            else:
+                return False
+        else:
+            return False
 
 
 class CP():
@@ -138,14 +181,19 @@ if len(argv) > 1:
 
                 sequence = list(map(int, str(argv[Aux+1])))
 
-                ListAction[sequence[0]][sequence[1]](Pass)
+                result = ListAction[sequence[0]][sequence[1]](Pass)
 
-                print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
-                time.sleep(2)
-                os.system("clear")
+                if(result == True):
+                    print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
+                    time.sleep(2)
+                    os.system("clear")
+                else:
+                    print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n") 
+                    time.sleep(2)
+                    os.system("clear")                    
         else:
 
-            print(StyleText['fail']+"Argumento invalido")
+            print(StyleText['fail']+"There is an invalid argument")
             time.sleep(2)
             os.system('clear')
 
@@ -160,38 +208,42 @@ while(True):
 
     MenuSelection = []
 
-    for i in NameASCII:
-        print(StyleText['name']+i)
+    try:
+        for i in NameASCII:
+            print(StyleText['name']+i)
 
-    for i in ListFunction:
-        for a in range(len(ListFunction[i])):
-            print(StyleText['main']+ListFunction[i][a])
-        
-    if(Pass is None):
-        accessroot = int(input(StyleText['question']+"\nDo you want to execute commands like root? 1:Yes 2:No\nR= "))
-
-        if(accessroot == 1):
-            Pass = getpass.getpass("Enter your password\nR= ")
-            accessroot = 0
-
-
-    MenuSelection.append(int(input(StyleText['question']+"\nwhat command do you want to use?\nR = ")))
-
-    if(MenuSelection[0] in ListFunction):
-
-        os.system("clear")
-
-        for i in range(len(ListFunction[MenuSelection[0]])):
-            print(StyleText['main']+ListFunction[MenuSelection[0]][i])
-
-        MenuSelection.append(int(input(StyleText['question']+"\nwhat action do you want to perform?\nR = ")))
-
-        ListAction[MenuSelection[0]][MenuSelection[1]](Pass)
-
-        print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
-
-        time.sleep(2)
+        for i in ListFunction:
+            for a in range(len(ListFunction[i])):
+                print(StyleText['main']+ListFunction[i][a])
             
+        if(Pass is None):
+            accessroot = int(input(StyleText['question']+"\nDo you want to execute commands like root? 1:Yes 2:No\nR= "))
+
+            if(accessroot == 1):
+                Pass = getpass.getpass("Enter your password\nR= ")
+                accessroot = 0
+
+
+        MenuSelection.append(int(input(StyleText['question']+"\nwhat command do you want to use?\nR = ")))
+
+        if(MenuSelection[0] in ListFunction):
+
+            os.system("clear")
+
+            for i in range(len(ListFunction[MenuSelection[0]])):
+                print(StyleText['main']+ListFunction[MenuSelection[0]][i])
+
+            MenuSelection.append(int(input(StyleText['question']+"\nwhat action do you want to perform?\nR = ")))
+
+            ListAction[MenuSelection[0]][MenuSelection[1]](Pass)
+
+            print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
+
+            time.sleep(2)
+    except ValueError:
+        print(StyleText['fail']+"\nENTER NUMBERS ONLY")
+        time.sleep(2)
+        os.system("clear")            
     else:
         os.system("clear")
         pass
