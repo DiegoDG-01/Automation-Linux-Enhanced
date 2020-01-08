@@ -21,20 +21,10 @@ class APT():
         else:
             echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
             process = subprocess.Popen(['sudo', '-S','apt-get','update'], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+        
         Out, Err = process.communicate()
 
-        Out = Out.decode(getdefaultencoding()).strip()
-        Err = Err.decode(getdefaultencoding()).strip()
-
-        if(Err != ''):
-            print(Err)
-
-            return False
-        else:
-            print(Out)
-
-            return True
+        return Out, Err
 
     def Upgrade(self, Pass):
 
@@ -48,28 +38,23 @@ class APT():
 
         Out, Err = process.communicate()
 
-        Out = Out.decode(getdefaultencoding()).strip()
-        Err = Err.decode(getdefaultencoding()).strip()
-
-        if(Err != ''):
-            print(Err)
-
-            return False
-        else:
-            print(Out)
-
-            return True
+        return Out, Err
 
     def FullUPUG(self, Pass):   
         result = self.Update(Pass)
-        if(result == True):
+
+        Err = result[1].decode(getdefaultencoding()).strip()
+
+        ErrSudo = Err.find("sudo")
+
+        if(ErrSudo == 1):
+            Err = ''
+
+        if(Err == ''):
             result = self.Upgrade(Pass)
-            if(result == True):
-                return True
-            else:
-                return False
+            return result
         else:
-            return False
+            return result
 
 
 class CP():
@@ -98,22 +83,7 @@ class CP():
 
                 Out, Err = process.communicate()
 
-                Out = Out.decode(getdefaultencoding()).strip()
-                Err = Err.decode(getdefaultencoding()).strip()
-
-                ErrSudo = Err.find("sudo")
-
-                if(ErrSudo == 1):
-                    Err = ''
-
-                if(Err != ''):
-                    print(Err)
-
-                    return False
-                else:
-                    print(Out)
-
-                    return True
+                return Out, Err
             else:
                 print(StyleText['question']+"Folder not found")
                 return False
@@ -146,26 +116,13 @@ class CP():
 
                 Out, Err = process.communicate()
 
-                Out = Out.decode(getdefaultencoding()).strip()
-                Err = Err.decode(getdefaultencoding()).strip()
-
-                ErrSudo = Err.find("sudo")
-
-                if(ErrSudo == 1):
-                    Err = ''
-
-                if(Err != ''):
-                    print(Err)
-
-                    return False
-                else:
-                    print(Out)
-
-                    return True
+                return Out, Err
             else:
                 print(StyleText['question']+"Path not found")
+                return False
         else:
             print(StyleText['question']+"Folder not found")
+            return False
 
 
 class PIP():
@@ -204,6 +161,8 @@ pip = PIP()
 ws = WebServer()
 
 NameASCII = ('##########################','#  ____    ____     ____ #', '# |  _ \  |  _ \   / ___|#', '# | | | | | | | | | |  _ #', '# | |_| | | |_| | | |_| |#','# |____/  |____/   \____|#','##########################','\nBasic Automatication for linux\n')
+StyleText = {'main':"\x1b[1;33m", 'name':"\x1b[1;31m", 'complete':"\x1b[1;32m", 'fail':"\x1b[1;31m", 'question':"\x1b[1;34m",'info':"\x1b[1;36m"}
+
 ListFunction = {1:{0:'1.- APT',1:'\t1.- Update system', 2:'\t2.- Upgrade system', 3:'\t3.- Update & Upgrade System'},
                 2:{0:'\n2.- CP', 1:'\t1.- Copy file', 2:'\t2.- Copy folder'},
                 3:{0:'\n3.-PIP', 1:'\t1.- Install package', 2:'\t2.- Uninstall package'},
@@ -213,42 +172,60 @@ ListAction = {1:{1:apt.Update, 2:apt.Upgrade, 3:apt.FullUPUG},
               3:{1:pip.Install, 2:pip.Uninstall},
               4:{1:ws.ServerEnable, 2:ws.ServerDisable}}
 ListSpecialArg = ('-r','-s') #-r Root | -s Sequence
-StyleText = {'main':"\x1b[1;33m", 'name':"\x1b[1;31m", 'complete':"\x1b[1;32m", 'fail':"\x1b[1;31m", 'question':"\x1b[1;34m",'info':"\x1b[1;36m"}
 
 
 if len(argv) > 1:
 
-    while(Aux < len(argv)):
+    try:
+        while(Aux < len(argv)):
 
-        if(argv[Aux] in ListSpecialArg and argv[Aux].find("-") == 0):
+            if(argv[Aux] in ListSpecialArg and argv[Aux].find("-") == 0):
 
-            if(argv[Aux] == ListSpecialArg[0]):
-                Pass = argv[Aux+1]
+                if(argv[Aux] == ListSpecialArg[0]):
+                    Pass = argv[Aux+1]
 
-            elif(argv[Aux] == ListSpecialArg[1]):   
+                elif(argv[Aux] == ListSpecialArg[1]):   
 
-                sequence = list(map(int, str(argv[Aux+1])))
+                    sequence = list(map(int, str(argv[Aux+1])))
 
-                result = ListAction[sequence[0]][sequence[1]](Pass)
+                    result = ListAction[sequence[0]][sequence[1]](Pass)
 
-                if(result == True):
-                    print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
-                else:
-                    print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n") 
-                    
-                time.sleep(3)
-                os.system("clear")                    
-        else:
+                    if(isinstance(result, bool)):
+                        if(result == False):
+                            Err = ' '
+                    else:
+                        Out = result[0].decode(getdefaultencoding()).strip()
+                        Err = result[1].decode(getdefaultencoding()).strip()
 
-            print(StyleText['fail']+"There is an invalid argument")
-            time.sleep(2)
-            os.system('clear')
+                        ErrSudo = Err.find("sudo")
 
-        if(Aux2 < len(argv)):
-            Aux+=2
-            Aux2+=2
-        else:
-            break
+                        if(ErrSudo == 1):
+                            Err = ''
+
+                    if(Err != ''):
+                        print(Err)
+                        print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n")                
+                    else:
+                        print(Out)
+                        print(StyleText['complete']+"\nCOMPLETE TASK!!\n")
+
+                    time.sleep(2)
+                    os.system("clear")                 
+            else:
+
+                print(StyleText['fail']+"There is an invalid argument")
+                time.sleep(2)
+                os.system('clear')
+
+            if(Aux2 < len(argv)):
+                Aux+=2
+                Aux2+=2
+            else:
+                break
+    except ValueError:
+        print(StyleText['fail']+"\nENTER NUMBERS ONLY")
+        time.sleep(2)
+        os.system("clear") 
 
 
 while(True):
@@ -270,7 +247,6 @@ while(True):
                 Pass = getpass.getpass("Enter your password\nR= ")
                 accessroot = 0
 
-
         MenuSelection.append(int(input(StyleText['question']+"\nwhat command do you want to use?\nR = ")))
 
         if(MenuSelection[0] in ListFunction):
@@ -284,10 +260,24 @@ while(True):
 
             result = ListAction[MenuSelection[0]][MenuSelection[1]](Pass)
 
-            if(result == True):
-                print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
+            if(isinstance(result, bool)):
+                if(result == False):
+                    Err = ' '
             else:
+                Out = result[0].decode(getdefaultencoding()).strip()
+                Err = result[1].decode(getdefaultencoding()).strip()
+
+                ErrSudo = Err.find("sudo")
+
+                if(ErrSudo == 1):
+                    Err = ''
+
+            if(Err != ''):
+                print(Err)
                 print(StyleText['fail']+"\nERROR COMPLETING TASK!!\n")                
+            else:
+                print(Out)
+                print(StyleText['complete']+"\nCOMPLETE TASK!!\n") 
 
             time.sleep(2)
             os.system("clear")
@@ -295,6 +285,3 @@ while(True):
         print(StyleText['fail']+"\nENTER NUMBERS ONLY")
         time.sleep(2)
         os.system("clear")            
-    else:
-        os.system("clear")
-        pass
