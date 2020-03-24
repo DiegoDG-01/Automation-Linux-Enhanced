@@ -3,9 +3,7 @@
  <img width=200px height=200px src="https://image.flaticon.com/icons/svg/311/311329.svg" alt="Project logo"></a>
 </p>
 
-<center>
-    <h1 style="display:inline">A</h1><h3 style="display:inline">utomation </h3><h1 style="display:inline">L</h1><h3 style="display:inline">inux </h3><h1 style="display:inline">E</h1><h3 style="display:inline">nhanced</h3>
-</center>
+<h1 align="center">Automation Linux Enhanced</h1>
 
 <div align="center">
 
