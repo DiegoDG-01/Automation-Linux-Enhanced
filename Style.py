@@ -1,0 +1,1 @@
+Text = {'main':"\x1b[1;33m", 'name':"\x1b[1;31m", 'complete':"\x1b[1;32m", 'fail':"\x1b[1;31m", 'question':"\x1b[1;34m",'info':"\x1b[1;36m"}
