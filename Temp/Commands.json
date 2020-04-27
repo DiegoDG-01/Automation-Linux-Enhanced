@@ -1,0 +1,10 @@
+{
+    "APT":{
+        "update":"sudo -S apt-get update",
+        "upgrade": "sudo -S apt-get upgrade"
+    },
+    "PACMAN":{
+        "update":"sudo pacman -Sy",
+        "upgrade": "sudo pacman -Syu"
+    }
+}

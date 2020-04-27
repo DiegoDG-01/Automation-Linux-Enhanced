@@ -1,5 +1,6 @@
 import os
 import time
+import getpass
 import subprocess
 from sys import getdefaultencoding
 
@@ -13,7 +14,7 @@ class APT():
             return False
         else:
             echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
-            process = subprocess.Popen(['sudo', '-S','apt-get','update'], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(#FLAG#, stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         Out, Err = process.communicate()
 
@@ -27,7 +28,7 @@ class APT():
             return False
         else:
             echo = subprocess.Popen(['echo', Pass], stdout=subprocess.PIPE)
-            process = subprocess.Popen(['sudo', '-S','apt-get','upgrade'], stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(#FLAG#, stdin=echo.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         Out, Err = process.communicate()
 
@@ -146,3 +147,11 @@ class WebServer():
 
     def ServerEnable(self, Pass):
         os.system("echo "+Pass+" | sudo -S service apache2 start && service mysql start")
+
+class Special():
+
+    def ChangePass(self, Pass, StyleText):
+
+        Pass = getpass.getpass(StyleText['question']+"\nPlease enter your new password\nR=")
+
+        return Pass
