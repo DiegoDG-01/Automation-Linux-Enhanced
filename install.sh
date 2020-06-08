@@ -33,17 +33,17 @@ if [[ "$PM" == *"apt"* || "$PM" == *"pacman"* ]]; then
                      PM="PACMAN"
               fi
 
-              $(cp -r ../Basic-Automatication-for-linux ~/)
+              $(cp -r ../Automation-Linux-Enhanced ~/)
               $(cp ~/.bashrc ~/.bashrc.bak)
                             
               if [ -f ~/.bashrc.bak ]; then
                      echo -e '\n\E[32m'"Modifying essential files . . ."
-                     RS=$(python3 ~/Basic-Automatication-for-linux/Temp/modify.py $PM $User)
+                     RS=$(python3 ~/Automation-Linux-Enhanced/Temp/modify.py $PM $User)
 
                      if [[ "${RS}" == "True" ]]; then
 
                             echo -e '\E[32m'"Creating alias in .bashrc . . ."
-                            echo "alias ale='python3 ~/Basic-Automatication-for-linux/ALE.py'" >> ~/.bashrc
+                            echo "alias ale='python3 ~/Automation-Linux-Enhanced/ALE.py'" >> ~/.bashrc
                             $(source ~/.bashrc)
                      else
                             echo -e '\n\E[31m'"Error to modifying essential files" 
@@ -58,7 +58,7 @@ if [[ "$PM" == *"apt"* || "$PM" == *"pacman"* ]]; then
               read result
 
               if [[ "${result}" == "Y" || "${result}" == "y" ]]; then
-                     $(rm -rf ~/Basic-Automatication-for-linux/Temp)
+                     $(rm -rf ~/Automation-Linux-Enhanced/Temp)
               fi
               
               echo -e '\n\E[32m'"Installation Complete"

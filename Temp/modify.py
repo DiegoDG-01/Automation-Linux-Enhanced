@@ -3,7 +3,7 @@ from sys import argv
 
 if len(argv) > 1:
 
-    path = '/home/'+argv[2]+"/Basic-Automatication-for-linux"
+    path = '/home/'+argv[2]+"/Automation-Linux-Enhanced"
 
     try:
         with open(path+'/Temp/Commands.json') as file:
