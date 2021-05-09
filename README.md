@@ -7,7 +7,7 @@
 
 <div align="center">
 
-[![](https://img.shields.io/badge/status-active-success.svg)]()
+[![](https://img.shields.io/badge/status-inactive-blue.svg)]()
 
 </div>
 
